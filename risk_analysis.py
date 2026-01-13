@@ -1,43 +1,57 @@
 import pandas as pd
 import numpy as np
-
-
-# Apply PERT analysis (PMP) and specific risk scoring methodology.
+from datetime import datetime
+import os
 
 def calculate_pert_and_risk(planned, optimistic, pessimistic, risk_factor, complexity):
+
+    # Calculate PERT expected duration
+    expected_duration = (optimistic + (4 * planned) + pessimistic) / 6
     
-    
-    # PERT Formula: 
-    
-    expected_duration = (optimistic + (4 * most likely) + pessimistic) / 6
-    
-    # Risk Score: A combination of time variance, stakeholder complexity, and external risks. 
-    # Designed based on 30+ stakeholder management experiences.
+    # Calculate risk score based on duration variance and stakeholder complexity
     
     base_risk = expected_duration / planned
     weighted_risk = base_risk * (1 + (risk_factor * (complexity / 5)))
     
     return round(weighted_risk, 2)
 
-# Sample Project Data (Inspired by large-scale projects like the Egypt Factory Project)
-data = {
-    'TaskName': ['Production Line Transfer', 'Vendor Selection', 'Tool Installation', 'ISO Audit Preparation'],
-    'PlannedDays': [45, 20, 30, 15],
-    'OptimisticDays': [40, 15, 25, 12],
-    'PessimisticDays': [70, 40, 50, 25],
-    'RiskFactor': [0.6, 0.4, 0.3, 0.2],  # Vendor and installation risks
-    'Complexity': [5, 4, 3, 2] # [cite: 15] # Stakeholder complexity level
-}
+def run_automation(input_file):
+    # 1. Load the input data
+    if not os.path.exists(input_file):
+        print(f"Error: The file '{input_file}' was not found.")
+        return
 
-df = pd.DataFrame(data)
+    print(f"Loading data from {input_file}...")
+    df = pd.read_csv(input_file)
+    print(f"Success: {len(df)} tasks loaded. Starting analysis...")
 
-# Apply risk analysis
-df['Risk_Score'] = df.apply(lambda x: calculate_pert_and_risk(
-    x['PlannedDays'], x['OptimisticDays'], x['PessimisticDays'], 
-    x['RiskFactor'], x['Complexity']), axis=1)
+    # 2. Automated Risk Analysis
+    # Applying the logic to each row in the dataframe
+    df['Risk_Score'] = df.apply(lambda x: calculate_pert_and_risk(
+        x['PlannedDays'], x['OptimisticDays'], x['PessimisticDays'], 
+        x['RiskFactor'], x['Complexity']), axis=1)
 
-# Determine the criticality level.
-df['Status'] = np.where(df['Risk_Score'] > 1.3, 'CRITICAL', 'STABLE')
+    # Assigning status based on risk thresholds
+    df['Status'] = np.where(df['Risk_Score'] > 1.3, 'CRITICAL', 'STABLE')
 
-print("--- Project Risk Analysis Report ---")
-print(df[['TaskName', 'Risk_Score', 'Status']].sort_values(by='Risk_Score', ascending=False))
+    # 3. Exporting Results (Automated Reporting)
+    # Generate a filename with the current date
+    today = datetime.now().strftime('%Y-%m-%d')
+    output_filename = f"Project_Risk_Report_{today}.csv"
+    df.to_csv(output_filename, index=False)
+    
+    print("-" * 30)
+    print(f"Analysis Complete!")
+    print(f"Report Generated: {output_filename}")
+    print("-" * 30)
+    
+    # Print a summary of critical tasks for the user
+    critical_tasks = df[df['Status'] == 'CRITICAL']
+    if not critical_tasks.empty:
+        print(f"ALERT: Found {len(critical_tasks)} critical tasks that require attention.")
+    else:
+        print("All tasks are currently within stable risk limits.")
+
+if __name__ == "__main__":
+    # Ensure the 'input_projects.csv' file exists in the same directory
+    run_automation('input_projects.csv')
