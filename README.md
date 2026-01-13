@@ -6,3 +6,5 @@ This tool calculates project risk scores using the PERT (Program Evaluation and 
 ExpectedDuration= (Optimistic+(4×Planned)+Pessimistic) / 6
 ​	
 It further adjusts this score based on stakeholder complexity and external risk factors to prioritize management focus.
+
+![Project Risk Analysis](Project_Risk_Visual.png)
