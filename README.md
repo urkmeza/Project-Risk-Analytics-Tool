@@ -1,2 +1,2 @@
 # Project-Risk-Analytics-Tool
-A data-driven project risk assessment tool integrating PMP methodologies with Python and SQL.
+This project demonstrates the transition of 10+ years of industrial project management experience into data-driven decision-making tools using SQL and Python.
