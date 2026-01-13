@@ -8,3 +8,6 @@ ExpectedDuration= (Optimistic+(4×Planned)+Pessimistic) / 6
 It further adjusts this score based on stakeholder complexity and external risk factors to prioritize management focus.
 
 ![Project Risk Analysis](Project_Risk_Visual.png)
+
+Management Dashboard
+"This dashboard visualizes the Python-processed risk data, allowing executives to make data-driven decisions on resource allocation."
