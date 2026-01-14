@@ -4,21 +4,19 @@
 -- Author: Anil Urkmez (PMP, Six Sigma Black Belt)
 -- ==========================================================
 
--- 1. Create the Projects Table with proper constraints
 CREATE TABLE ProjectTasks (
     task_id INT PRIMARY KEY,
     task_name VARCHAR(255) NOT NULL,
-    category VARCHAR(50), -- e.g., 'Construction', 'IT', 'Quality'
+    category VARCHAR(50),
     planned_days INT NOT NULL,
     optimistic_days INT NOT NULL,
     pessimistic_days INT NOT NULL,
-    risk_factor FLOAT DEFAULT 0.0, -- Scale 0 to 1
+    risk_factor FLOAT DEFAULT 0.0,
     stakeholder_complexity INT CHECK (stakeholder_complexity BETWEEN 1 AND 5),
-    cost_impact_euro DECIMAL(15, 2), -- Reflecting €60M project experience
+    cost_impact_euro DECIMAL(15, 2),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- 2. Insert professional sample data reflecting your CV (Egypt Greenfield Project)
 INSERT INTO ProjectTasks (task_id, task_name, category, planned_days, optimistic_days, pessimistic_days, risk_factor, stakeholder_complexity, cost_impact_euro)
 VALUES 
 (1, 'Production Line Transfer - Egypt', 'Manufacturing', 45, 40, 75, 0.6, 5, 2000000.00),
@@ -27,8 +25,6 @@ VALUES
 (4, 'IT Infrastructure Setup', 'IT', 30, 25, 55, 0.5, 3, 150000.00),
 (5, 'Greenfield Factory Foundation', 'Construction', 60, 55, 90, 0.7, 5, 5000000.00);
 
--- 3. Create an Analytical View for quick insights
--- This shows you can perform calculations directly in SQL
 CREATE VIEW View_Critical_Path_Analysis AS
 SELECT 
     task_name,
@@ -40,6 +36,3 @@ SELECT
     END AS management_strategy
 FROM ProjectTasks
 WHERE risk_factor > 0.5;
-
--- 4. A professional query to test the data
-SELECT * FROM View_Critical_Path_Analysis ORDER BY pert_expected_duration DESC;
